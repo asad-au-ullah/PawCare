@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PetOwner
+  Veterinarian
+}
+
+enum PetSpecies {
+  Dog
+  Cat
+  Bird
+  Rabbit
+  Other
+}
+
+enum AppointmentStatus {
+  Scheduled
+  Confirmed
+  InProgress
+  Completed
+  Cancelled
+  NoShow
+}
+
+enum AppointmentReason {
+  Checkup
+  Vaccination
+  Surgery
+  Grooming
+  Dental
+  Emergency
+  Consultation
+}
+
+enum VeterinarianSpecialty {
+  GeneralPractice
+  InternalMedicine
+  Dermatology
+  Cardiology
+  Dentistry
+  Surgery
+  Oncology
+  ExoticAnimals
+}
+
+model User {
+  id                  String              @id @default(cuid())
+  email               String              @unique
+  passwordHash        String
+  role                UserRole            @default(PetOwner)
+  isEmailVerified     Boolean             @default(false)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  petOwner            PetOwner?
+  veterinarian        Veterinarian?
+  emailVerification   EmailVerification?
+
+  @@map("Users")
+}
+
+model EmailVerification {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("EmailVerifications")
+}
+
+model PetOwner {
+  id               Int       @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  applicationUserId String   @unique
+  applicationUser  User      @relation(fields: [applicationUserId], references: [id], onDelete: Cascade)
+  pets             Pet[]
+
+  @@map("PetOwners")
+}
+
+model Veterinarian {
+  id                Int                    @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  licenseNumber     String                 @unique
+  yearsOfExperience Int
+  consultationFee   Decimal                @db.Decimal(10, 2)
+  specialty         VeterinarianSpecialty
+  applicationUserId String                 @unique
+  applicationUser   User                   @relation(fields: [applicationUserId], references: [id], onDelete: Cascade)
+  appointments      Appointment[]
+
+  @@map("Veterinarians")
+}
+
+model Pet {
+  id                  Int           @id @default(autoincrement())
+  name                String
+  species             PetSpecies
+  breed               String
+  dateOfBirth         DateTime
+  isBirthDateEstimated Boolean
+  weight              Float?
+  ownerId             Int
+  owner               PetOwner      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  appointments        Appointment[]
+
+  @@index([ownerId])
+  @@map("Pets")
+}
+
+model Appointment {
+  id               Int               @id @default(autoincrement())
+  scheduledAt      DateTime
+  status           AppointmentStatus @default(Scheduled)
+  reason           AppointmentReason @default(Checkup)
+  notes            String            @default("")
+  durationMinutes  Int               @default(30)
+  petId            Int
+  pet              Pet               @relation(fields: [petId], references: [id], onDelete: Cascade)
+  veterinarianId   Int
+  veterinarian     Veterinarian      @relation(fields: [veterinarianId], references: [id], onDelete: Restrict)
+
+  @@index([petId])
+  @@index([veterinarianId])
+  @@map("Appointments")
+}
