@@ -1,34 +1,44 @@
-# React + TypeScript + Vite
+# PawCare Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+PawCare frontend migrated from React + Vite to **Next.js 16 App Router** with TypeScript.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Next.js 16.3.x (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- shadcn/ui
+- TanStack Query
+- React Hook Form + Zod
+- Axios
+- Sonner
 
-## React Compiler
+## Development
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Set the API URL in `.env.local`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=https://your-api.example.com
+```
+
+## Routes
+
+- `/`
+- `/login`
+- `/register`
+- `/verify-email`
+- `/dashboard`
+- `/pets`
+- `/pets/new`
+- `/pets/[id]/edit`
+- `/veterinarians`
+- `/book/[vetId]`
+- `/appointments`
+
+Authentication is currently preserved from the Vite application using the existing JWT in `localStorage`. The Next.js App Router is therefore used for routing and application structure, while the authenticated application remains client-driven where browser state and TanStack Query are required.

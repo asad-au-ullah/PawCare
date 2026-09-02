@@ -1,17 +1,19 @@
+'use client'
+
 import axios from 'axios'
 
 const TOKEN_KEY = 'pawcare_token'
 
 // ─── Token helpers ────────────────────────────────────────────────────────────
 
-export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY)
-export const setToken = (token: string): void => localStorage.setItem(TOKEN_KEY, token)
-export const removeToken = (): void => localStorage.removeItem(TOKEN_KEY)
+export const getToken = (): string | null => typeof window === 'undefined' ? null : localStorage.getItem(TOKEN_KEY)
+export const setToken = (token: string): void => { if (typeof window !== 'undefined') localStorage.setItem(TOKEN_KEY, token) }
+export const removeToken = (): void => { if (typeof window !== 'undefined') localStorage.removeItem(TOKEN_KEY) }
 
 // ─── Axios instance ───────────────────────────────────────────────────────────
 
 export const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
     withCredentials: false,
     headers: { 'Content-Type': 'application/json' },
 })

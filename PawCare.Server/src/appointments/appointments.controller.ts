@@ -8,7 +8,7 @@ import { AppointmentsService } from './appointments.service';
 
 @ApiTags('Appointments') @ApiBearerAuth() @UseGuards(JwtAuthGuard) @Controller('appointments')
 export class AppointmentsController {
-  constructor(private readonly appointments: AppointmentsService) {}
+  constructor(private readonly appointments: AppointmentsService) { }
   @Post() create(@CurrentUser() user: JwtPayload, @Body() dto: CreateAppointmentDto) { return this.appointments.create(user.sub, dto); }
   @Get('me') getMine(@CurrentUser() user: JwtPayload) { return this.appointments.getMine(user.sub); }
 }

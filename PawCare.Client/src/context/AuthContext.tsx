@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+'use client'
+
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import {
     authApi,
     getToken,
@@ -21,6 +23,7 @@ interface AuthUser {
 interface AuthContextValue {
     user: AuthUser | null
     isAuthenticated: boolean
+    isInitialized: boolean
     login: (data: LoginRequest) => Promise<void>
     register: (data: RegisterRequest) => Promise<void>
     verifyEmail: (userId: string, token: string) => Promise<void>
@@ -57,7 +60,13 @@ function loadUserFromStorage(): AuthUser | null {
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<AuthUser | null>(loadUserFromStorage)
+    const [user, setUser] = useState<AuthUser | null>(null)
+    const [isInitialized, setIsInitialized] = useState(false)
+
+    useEffect(() => {
+        setUser(loadUserFromStorage())
+        setIsInitialized(true)
+    }, [])
 
     const login = useCallback(async (data: LoginRequest) => {
         const response = await authApi.login(data)
@@ -85,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: user !== null, login, register, verifyEmail, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: user !== null, isInitialized, login, register, verifyEmail, logout }}>
             {children}
         </AuthContext.Provider>
     )

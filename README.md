@@ -4,34 +4,23 @@
 
 ### Full-Stack Veterinary Appointment Management Platform
 
-**ASP.NET Core &nbsp;•&nbsp; React &nbsp;•&nbsp; TypeScript**
+**Next.js • NestJS • TypeScript • PostgreSQL**
 
-[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square\&logo=next.js)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square\&logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square\&logo=typescript)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square\&logo=postgresql)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Release](https://img.shields.io/badge/Release-v1.0.0--mvp-orange?style=flat-square)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)]()
 
 <br/>
 
-> PawCare is a full-stack web application that enables pet owners to register, manage their pets,  
-> and book appointments with veterinarians through a clean and responsive interface.
+> PawCare is a full-stack veterinary appointment management platform that enables pet owners to register, manage their pets, browse veterinarians, and book appointments through a clean and responsive interface.
 
 <br/>
 
-[Live Demo](https://paw-care-vet.vercel.app) &nbsp;•&nbsp; [API](https://pawcare-ecf0.onrender.com) &nbsp;•&nbsp; [Report Bug](#) &nbsp;•&nbsp; [Request Feature](#)
-
-
-## Demo Environment Notice
-
-This application is hosted using free-tier cloud services (Render, Vercel, and Neon). As a result, the backend service may enter a sleep state after periods of inactivity.
-
-The first request after inactivity may take approximately 30–60 seconds while the API wakes up. Subsequent requests should respond normally.
-
-This behavior is related to hosting limitations and does not reflect the application's production performance characteristics.
-
+[Live Demo](https://paw-care-vet.vercel.app)  •  [API](#)  •  [Report Bug](#)  •  [Request Feature](#)
 
 </div>
 
@@ -39,37 +28,40 @@ This behavior is related to hosting limitations and does not reflect the applica
 
 ## 📋 Table of Contents
 
-- [Features](#-features)
-- [Demo](#-demo)
-- [Screenshots](#-screenshots)
-- [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
-- [Getting Started](#-getting-started)
-- [Configuration](#-configuration)
-- [Demo Credentials](#-demo-credentials)
-- [Project Structure](#-project-structure)
-- [MVP Workflow](#-mvp-workflow)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Author](#-author)
+* [Features](#-features)
+* [Demo](#-demo)
+* [Screenshots](#-screenshots)
+* [Architecture](#-architecture)
+* [Tech Stack](#-tech-stack)
+* [Getting Started](#-getting-started)
+* [Configuration](#-configuration)
+* [Demo Credentials](#-demo-credentials)
+* [Project Structure](#-project-structure)
+* [MVP Workflow](#-mvp-workflow)
+* [Engineering Evolution](#-engineering-evolution)
+* [Roadmap](#-roadmap)
+* [Contributing](#-contributing)
+* [License](#-license)
+* [Author](#-author)
 
 ---
 
 ## ✨ Features
 
-| | |
-|---|---|
-| 🐶 **Pet Management** — Manage multiple pets with full CRUD operations. | 📅 **Appointment Booking** — Schedule appointments with veterinarians. |
+|                                                                                 |                                                                                 |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 🐶 **Pet Management** — Manage multiple pets with full CRUD operations.         | 📅 **Appointment Booking** — Schedule appointments with veterinarians.          |
 | 🔒 **JWT Authentication** — Secure authentication and role-based authorization. | 👩‍⚕️ **Veterinarian Directory** — Browse available veterinarians by specialty. |
-| 📋 **Appointment Tracking** — View and manage upcoming appointments. | 📱 Responsive Design — Optimized for desktop and mobile devices. |
+| 📋 **Appointment Tracking** — View and manage upcoming appointments.            | 📱 **Responsive Design** — Optimized for desktop and mobile devices.            |
 
 ---
 
 ## 🎥 Demo
 
 <!-- walkthrough -->
+
 <video src="https://github.com/user-attachments/assets/d22687e8-7a50-4269-9bfe-6fb87846644d" width="1280" height="720" controls></video>
+
 ---
 
 ## 📸 Screenshots
@@ -145,34 +137,34 @@ flowchart TB
 
 subgraph Client["Client Layer"]
     User["👤 Pet Owner / Veterinarian"]
-    React["React 19<br/>TypeScript<br/>Vite<br/>Base UI"]
-    User --> React
+    Next["Next.js<br/>TypeScript<br/>App Router<br/>Tailwind CSS"]
+    User --> Next
 end
 
 %% =========================
 %% API LAYER
 %% =========================
 
-React -- HTTPS / REST API<br/>JWT Bearer --> API
+Next -- HTTPS / REST API<br/>JWT --> API
 
-subgraph API["ASP.NET Core Web API"]
-    subgraph Endpoints["Minimal API Endpoints"]
-        Auth["Auth Endpoints"]
-        Pet["Pet Endpoints"]
-        Vet["Veterinarian Endpoints"]
-        Appointment["Appointment Endpoints"]
+subgraph API["NestJS API"]
+    subgraph Modules["Feature Modules"]
+        Auth["Auth Module"]
+        Pet["Pets Module"]
+        Vet["Veterinarians Module"]
+        Appointment["Appointments Module"]
     end
 
     subgraph Business["Business Rules"]
-        Validation["FluentValidation"]
+        Validation["Request Validation"]
         Authorization["JWT Authorization"]
         Scheduling["Appointment Scheduling"]
     end
 
+    Auth --> Authorization
     Pet --> Validation
     Vet --> Validation
     Appointment --> Scheduling
-    Auth --> Authorization
 end
 
 %% =========================
@@ -180,26 +172,24 @@ end
 %% =========================
 
 subgraph Data["Persistence Layer"]
-    EF["Entity Framework Core"]
-
+    Prisma["Prisma ORM"]
     SQL[("PostgreSQL")]
-
-    EF --> SQL
+    Prisma --> SQL
 end
 
-Pet --> EF
-Vet --> EF
-Appointment --> EF
-Auth --> EF
+Auth --> Prisma
+Pet --> Prisma
+Vet --> Prisma
+Appointment --> Prisma
 
 %% =========================
 %% DATABASE
 %% =========================
 
-subgraph Database["Database Schema"]
-    Users["AspNetUsers"]
-    Roles["AspNetRoles"]
-    Owners["PetOwners"]
+subgraph Database["Database"]
+    Users["Users"]
+    Roles["Roles"]
+    Owners["Pet Owners"]
     Vets["Veterinarians"]
     Pets["Pets"]
     Appointments["Appointments"]
@@ -216,7 +206,7 @@ SQL --> Appointments
 %% FUTURE INTEGRATIONS
 %% =========================
 
-subgraph Future["External Services (Future Roadmap)"]
+subgraph Future["External Services"]
     Stripe["Stripe Payments"]
     Jitsi["Jitsi Meet"]
     Email["Email Notifications"]
@@ -233,43 +223,54 @@ Appointment -. Future .-> Calendar
 API -. Telemetry .-> Monitoring
 ```
 
+PawCare uses a separated frontend and backend architecture within a single repository:
+
+* **Next.js** handles the web application and user-facing experience.
+* **NestJS** provides the dedicated REST API and business logic layer.
+* **Prisma** provides type-safe database access.
+* **PostgreSQL** provides relational persistence.
+
+This separation keeps the frontend focused on presentation and application delivery while allowing the backend to evolve independently as the domain grows.
+
 ---
 
 ## 🛠 Tech Stack
 
 ### Frontend
 
-| Technology | Purpose |
-|---|---|
-| React 19 | UI framework |
-| TypeScript | Type safety |
-| Vite | Build tool & dev server |
-| React Router | Client-side routing |
-| TanStack Query | Server state & caching |
-| React Hook Form + Zod | Form management & validation |
-| Tailwind CSS v4 | Utility-first styling |
-| shadcn/ui | Component library |
-| Axios | HTTP client with JWT interceptor |
-| Sonner | Toast notifications |
+| Technology            | Purpose                                 |
+| --------------------- | --------------------------------------- |
+| Next.js               | React framework and web application     |
+| TypeScript            | Type safety                             |
+| App Router            | Application routing and layouts         |
+| TanStack Query        | Server state, caching, and invalidation |
+| React Hook Form + Zod | Form management and validation          |
+| Tailwind CSS          | Utility-first styling                   |
+| shadcn/ui             | Reusable UI components                  |
+| Axios                 | HTTP client and API communication       |
+| Sonner                | Toast notifications                     |
 
 ### Backend
 
-| Technology | Purpose |
-|---|---|
-| ASP.NET Core (.NET 10) | Web API (Minimal APIs) |
-| ASP.NET Core Identity | User management & password hashing |
-| Entity Framework Core | ORM |
-| Npgsql | PostgreSQL driver |
-| JWT Bearer Auth | Stateless authentication |
-| FluentValidation | Request input validation |
-| Docker | Containerization |
-| OpenAPI / Swagger | API documentation |
+| Technology        | Purpose                                          |
+| ----------------- | ------------------------------------------------ |
+| NestJS            | Structured REST API and application architecture |
+| TypeScript        | Type safety                                      |
+| Prisma            | Type-safe ORM and database access                |
+| PostgreSQL        | Relational database                              |
+| JWT               | Stateless authentication                         |
+| Passport          | Authentication strategy integration              |
+| class-validator   | Request validation                               |
+| Swagger / OpenAPI | API documentation                                |
 
-### Development Tools
+### Infrastructure & Development
 
-- Visual Studio 2022
-- Visual Studio Code
-- Git & GitHub
+| Technology     | Purpose                        |
+| -------------- | ------------------------------ |
+| Vercel         | Application and API deployment |
+| Neon           | Managed PostgreSQL             |
+| Git & GitHub   | Version control                |
+| GitHub Actions | CI/CD                          |
 
 ---
 
@@ -277,12 +278,9 @@ API -. Telemetry .-> Monitoring
 
 ### Prerequisites
 
-- [.NET SDK 10](https://dotnet.microsoft.com/download)
-- [Node.js 22+](https://nodejs.org/)
-- [PostgreSQL 16+](https://www.postgresql.org/download/)
-- Git
-
----
+* [Node.js 22+](https://nodejs.org/)
+* [PostgreSQL 16+](https://www.postgresql.org/download/)
+* Git
 
 ### Clone the repository
 
@@ -291,122 +289,122 @@ git clone https://github.com/asad-au-ullah-portfolio/PawCare.git
 cd PawCare
 ```
 
----
+### Install dependencies
 
-### Backend
-
-```bash
-cd backend
-
-dotnet restore
-
-dotnet ef database update
-
-dotnet run
-```
-
-API will be available at:
-
-```
-https://localhost:7228
-```
-
----
-
-### Frontend
+Install dependencies for both applications:
 
 ```bash
-cd frontend
-
+cd PawCare.Client
 npm install
 
+cd ../PawCare.Server
+npm install
+```
+
+### Database
+
+Configure your PostgreSQL connection string in the backend environment variables.
+
+Then generate the Prisma client and apply the database schema:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+If seed data is configured:
+
+```bash
+npm run prisma:seed
+```
+
+### Start the backend
+
+```bash
+cd PawCare.Server
+npm run start:dev
+```
+
+The NestJS API will run on the configured local API port.
+
+### Start the frontend
+
+In another terminal:
+
+```bash
+cd PawCare.Client
 npm run dev
 ```
 
-Application will be available at:
+The Next.js application will be available at:
 
-```
-http://localhost:5173
-```
-
----
-
-## ⚙ Configuration
-
-Update `appsettings.json` with your values:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=PawCareDb;Username=your_user;Password=your_password"
-  },
-  "Jwt": {
-    "Key": "YOUR_SECRET_KEY",
-    "Issuer": "PawCareApi",
-    "Audience": "PawCareClient",
-    "ExpiryMinutes": 60
-  }
-}
+```text
+http://localhost:3000
 ```
 
 ---
 
-## 🌍 Deployment
+## ⚙️ Configuration
 
-| Layer | Platform |
-|---|---|
-| Frontend | [Vercel](https://vercel.com/) |
-| Backend | [Render](https://render.com/) |
-| Database | [Neon PostgreSQL](https://neon.tech/) |
+### Backend
 
-**Live URLs**
+Create an environment file inside `PawCare.Server`:
 
-| | URL |
-|---|---|
-| Frontend | https://paw-care-coral.vercel.app |
-| Backend API | https://pawcare-ecf0.onrender.com |
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE"
 
----
+JWT_SECRET="YOUR_SECRET_KEY"
+JWT_EXPIRES_IN="1h"
 
-## 💡 Engineering Highlights
+PORT=3001
+```
 
-- Stateless JWT authentication with role-based authorization
-- Ownership-scoped data access (pet owners see only their own data)
-- Feature-folder backend architecture for clarity and maintainability
-- Typed API client with Axios JWT interceptor and automatic token handling
-- Server state management with TanStack Query (caching, invalidation, loading states)
-- Form validation with React Hook Form + Zod schema definitions
-- Responsive UI built with Tailwind CSS v4 and shadcn/ui
-- PostgreSQL relational schema with EF Core migrations
-- Cloud deployment with Vercel (frontend) and Render (backend)
+### Frontend
+
+Create an environment file inside `PawCare.Client`:
+
+```env
+NEXT_PUBLIC_API_URL="http://localhost:3001"
+```
+
+Never commit real secrets or production credentials to the repository.
 
 ---
 
 ## 📂 Project Structure
 
-```
+```text
 PawCare/
 │
-├── PawCare.Server/
-│   ├── Features/
-│   │   ├── Auth/            # Register, Login endpoints & DTOs
-│   │   ├── Pets/            # Pet CRUD endpoints & DTOs
-│   │   ├── Appointments/    # Booking & appointment history
-│   │   └── Veterinarians/   # Veterinarian listing
-│   ├── Entities/            # Domain entities (Pet, Appointment, etc.)
-│   ├── Persistence/         # DbContext, seeders, EF configuration
-│   ├── Infrastructure/      # Cross-cutting concerns
-│   ├── Validators/          # FluentValidation validators
-│   └── Migrations/
-│
 ├── PawCare.Client/
+│   ├── app/
+│   │   ├── (auth)/
+│   │   ├── dashboard/
+│   │   ├── appointments/
+│   │   ├── pets/
+│   │   └── ...
+│   │
+│   ├── components/
+│   │   └── ...
+│   ├── hooks/
+│   ├── lib/
+│   ├── services/
+│   ├── public/
+│   └── package.json
+│
+├── PawCare.Server/
 │   ├── src/
-│   │   ├── components/      # Shared UI components
-│   │   ├── pages/           # Route-level page components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── services/        # Axios API client & typed service calls
-│   │   └── lib/             # Utilities, constants, Zod schemas
-│   └── public/
+│   │   ├── auth/
+│   │   ├── pets/
+│   │   ├── appointments/
+│   │   ├── veterinarians/
+│   │   └── ...
+│   │
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   └── seed.ts
+│   │
+│   └── package.json
 │
 └── README.md
 ```
@@ -417,46 +415,136 @@ PawCare/
 
 The current MVP supports the complete end-to-end user journey:
 
-```
+```text
 Register
-    ↓
+   ↓
 Login
-    ↓
+   ↓
 Dashboard
-    ↓
+   ↓
 Add Pet
-    ↓
+   ↓
 Browse Veterinarians
-    ↓
+   ↓
 Book Appointment
-    ↓
+   ↓
 View My Appointments
 ```
+
+---
+
+## 🔄 Engineering Evolution
+
+PawCare was originally developed using **React + ASP.NET Core**.
+
+As the project evolved, the application was migrated to a modern **TypeScript-based full-stack architecture using Next.js + NestJS + Prisma**.
+
+The migration preserved the application's core functionality and API contracts while replacing the original backend infrastructure with:
+
+```text
+ASP.NET Core
+    ↓
+NestJS
+
+Entity Framework Core
+    ↓
+Prisma
+
+ASP.NET Identity / JWT plumbing
+    ↓
+NestJS authentication architecture
+
+React + Vite
+    ↓
+Next.js
+```
+
+The migration provided an opportunity to reassess the application's architecture rather than simply porting the existing implementation line-for-line.
+
+The current repository represents the **Next.js + NestJS implementation**.
+
+---
+
+## 🌍 Deployment
+
+| Layer       | Platform        |
+| ----------- | --------------- |
+| Frontend    | Vercel          |
+| Backend API | Vercel          |
+| Database    | Neon PostgreSQL |
+
+### Production Architecture
+
+```text
+                    Vercel
+             ┌─────────────────┐
+             │                 │
+             │    Next.js      │
+             │    Web App      │
+             │                 │
+             │        ↓        │
+             │                 │
+             │    NestJS API   │
+             │                 │
+             └────────┬────────┘
+                      │
+                      ↓
+               Neon PostgreSQL
+```
+
+---
+
+## 💡 Engineering Highlights
+
+* Modular backend architecture using NestJS
+* Feature-oriented separation of authentication, pets, veterinarians, and appointments
+* Stateless JWT authentication and authorization
+* Ownership-scoped data access
+* Type-safe database access with Prisma
+* PostgreSQL relational data model
+* Server-state management and caching with TanStack Query
+* Form validation using React Hook Form and Zod
+* Responsive UI built with Tailwind CSS and shadcn/ui
+* Next.js App Router architecture
+* Separated frontend and backend responsibilities
+* Full-stack TypeScript development
+* Migration from React + ASP.NET Core to Next.js + NestJS + Prisma
+* Cloud deployment using Vercel and Neon PostgreSQL
 
 ---
 
 ## 🛣 Roadmap
 
 ### v1.1 — Infrastructure
-- [x] Docker & Docker Compose
-- [x] Cloud deployment (Vercel + Render)
-- [ ] CI/CD with GitHub Actions
-- [ ] Structured logging (Serilog + Seq)
+
+* [x] Next.js migration
+* [x] NestJS migration
+* [x] Prisma migration
+* [x] Cloud deployment
+* [ ] CI/CD with GitHub Actions
+* [ ] Structured logging
+* [ ] Health checks
+* [ ] API rate limiting
 
 ### v1.2 — Quality
-- [ ] Integration tests
-- [ ] OpenTelemetry + Grafana
-- [ ] Health checks & response caching
-- [ ] API rate limiting
-- [ ] API documentation (Swagger)
+
+* [ ] Integration tests
+* [ ] End-to-end tests
+* [ ] OpenTelemetry
+* [ ] API documentation
+* [ ] Performance monitoring
+* [ ] Automated database migration workflow
 
 ### v2.0 — Features
-- [ ] Email notifications & appointment reminders
-- [ ] Online payments (Stripe)
-- [ ] Real-time video consultations (Jitsi)
-- [ ] Medical records & e-prescriptions
-- [ ] Reviews & ratings
-- [ ] Admin dashboard
+
+* [ ] Google Calendar integration
+* [ ] Email notifications & appointment reminders
+* [ ] Online payments with Stripe
+* [ ] Real-time video consultations with Jitsi
+* [ ] Medical records & e-prescriptions
+* [ ] Reviews & ratings
+* [ ] Admin dashboard
+* [ ] Multi-tenant / white-label configuration
 
 ---
 
@@ -482,8 +570,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 **Asadullah Ehsan**
 
-- LinkedIn: [Asadullah Ehsan](https://www.linkedin.com/in/asadullahehsan/)
-- GitHub: [asad-au-ullah-portfolio](https://github.com/asad-au-ullah-portfolio)
+* LinkedIn: [Asadullah Ehsan](https://www.linkedin.com/in/asadullahehsan/)
+* GitHub: [asad-au-ullah](https://github.com/asad-au-ullah)
 
 ---
 
@@ -492,9 +580,3 @@ This project is licensed under the [MIT License](LICENSE).
 If you found this project useful, consider giving it a ⭐
 
 </div>
-
-## NestJS backend migration
-
-A complete NestJS + Prisma migration of the ASP.NET Core API is available in `PawCare.Api/`. It preserves the existing REST routes and frontend response contract while replacing Minimal APIs, EF Core, ASP.NET Identity, and JWT plumbing with NestJS equivalents.
-
-See `docs/migration-notes.md` for the architectural decisions and production-user migration note.
