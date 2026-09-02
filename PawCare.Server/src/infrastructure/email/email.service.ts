@@ -1,29 +1,39 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
-    private readonly resend: Resend;
+    private readonly transporter: nodemailer.Transporter;
     private readonly fromAddress: string;
     private readonly logger = new Logger(EmailService.name);
 
     constructor(private readonly config: ConfigService) {
-        this.resend = new Resend(config.getOrThrow<string>('RESEND_API_KEY'));
-        this.fromAddress = config.getOrThrow<string>('EMAIL_FROM_ADDRESS');
+        const user = config.getOrThrow<string>('EMAIL_USER');
+        const pass = config.getOrThrow<string>('EMAIL_APP_PASSWORD');
+
+        this.fromAddress = config.get<string>('EMAIL_FROM_ADDRESS') ?? user;
+
+        this.transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // STARTTLS
+            auth: { user, pass },
+        });
     }
 
     async send(to: string, subject: string, htmlBody: string): Promise<void> {
-        const { error } = await this.resend.emails.send({
-            from: `PawCare <${this.fromAddress}>`,
-            to,
-            subject,
-            html: htmlBody,
-        });
-
-        if (error) {
-            this.logger.error(`Resend error: ${error.message}`);
-            throw new Error(error.message);
+        try {
+            await this.transporter.sendMail({
+                from: `PawCare <${this.fromAddress}>`,
+                to,
+                subject,
+                html: htmlBody,
+            });
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            this.logger.error(`Nodemailer error: ${message}`);
+            throw new Error(message);
         }
     }
 }
