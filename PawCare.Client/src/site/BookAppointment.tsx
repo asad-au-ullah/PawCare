@@ -769,7 +769,7 @@ export function BookAppointment() {
                         <p className="text-xs text-amber-700 mt-0.5">
                             You need to add a pet before booking an appointment.{' '}
                             <button
-                                onClick={() => router.push('/pets/new', { state: { returnTo: location.pathname } })}
+                                onClick={() => router.push(`/pets/new?returnTo=${encodeURIComponent(pathname)}`)}
                                 className="underline underline-offset-2 hover:text-amber-900 transition-colors"
                             >
                                 Add a pet
