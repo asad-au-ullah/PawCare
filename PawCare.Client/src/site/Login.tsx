@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { authApi, type LoginRequest } from '../../services/api'
@@ -29,12 +29,17 @@ type FormData = z.infer<typeof schema>
 export function Login() {
     const { login } = useAuth()
     const router = useRouter()
+    const searchParams = useSearchParams()
+
+    const rawNext = searchParams.get('next')
+    const isSafeInternalPath = Boolean(rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.includes('\\'))
+    const redirectTo = isSafeInternalPath ? rawNext! : '/dashboard'
 
     const form = useForm<FormData>({ resolver: zodResolver(schema) })
 
     const loginMutation = useMutation({
         mutationFn: (data: LoginRequest) => login(data),
-        onSuccess: () => router.push('/dashboard'),
+        onSuccess: () => router.push(redirectTo),
     })
 
     const resendMutation = useMutation({

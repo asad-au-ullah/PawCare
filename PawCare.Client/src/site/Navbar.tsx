@@ -1,14 +1,13 @@
 'use client'
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
 
 const navLinks = [
     { to: "/dashboard", label: "Dashboard" },
@@ -19,14 +18,10 @@ const navLinks = [
 
 export function Navbar() {
     const { user, logout } = useAuth();
-    const router = useRouter();
     const pathname = usePathname();
-    const queryClient = useQueryClient();
 
     const handleLogout = () => {
         logout();
-        queryClient.clear();
-        router.push("/login");
     };
 
     const initials = user

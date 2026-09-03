@@ -1,6 +1,8 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import {
     authApi,
     getToken,
@@ -62,6 +64,8 @@ function loadUserFromStorage(): AuthUser | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<AuthUser | null>(null)
     const [isInitialized, setIsInitialized] = useState(false)
+    const router = useRouter()
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         setUser(loadUserFromStorage())
@@ -91,7 +95,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const logout = useCallback(() => {
         removeToken()
         setUser(null)
-    }, [])
+        queryClient.clear()
+        router.replace('/login')
+    }, [queryClient, router])
 
     return (
         <AuthContext.Provider value={{ user, isAuthenticated: user !== null, isInitialized, login, register, verifyEmail, logout }}>
