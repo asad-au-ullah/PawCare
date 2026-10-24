@@ -151,7 +151,7 @@ export default function Home() {
                         <Zap className="w-4 h-4" />
                         {demoMutation.isPending ? 'Loading…' : 'Try Demo — No Sign-up'}
                     </Button>
-                    <Button size="lg" onClick={() => navigate(isAuthenticated ? '/veterinarians' : '/register')} className="px-8">
+                    <Button size="lg" onClick={() => isAuthenticated ? navigate('/veterinarians') : demoMutation.mutate()} className="px-8">
                         Book an Appointment
                     </Button>
                     <Button size="lg" variant="outline" onClick={() => navigate('/veterinarians')} className="px-8">
@@ -301,7 +301,7 @@ export default function Home() {
                             <Zap className="w-4 h-4" />
                             {demoMutation.isPending ? 'Loading…' : 'Try Demo — No Sign-up'}
                         </Button>
-                        <Button size="lg" variant="outline" onClick={() => navigate(isAuthenticated ? '/dashboard' : '/register')} className="px-10">
+                        <Button size="lg" variant="outline" onClick={() => isAuthenticated ? navigate('/dashboard') : demoMutation.mutate()} className="px-10">
                             Get Started
                         </Button>
                     </div>
@@ -323,9 +323,7 @@ export default function Home() {
                         <button onClick={() => navigate('/veterinarians')} className="hover:text-slate-900 transition-colors">
                             Veterinarians
                         </button>
-                        <button onClick={() => navigate('/register')} className="hover:text-slate-900 transition-colors">
-                            Register
-                        </button>
+
                         <button onClick={() => navigate('/login')} className="hover:text-slate-900 transition-colors">
                             Login
                         </button>

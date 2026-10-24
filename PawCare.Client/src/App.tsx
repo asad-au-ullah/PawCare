@@ -5,7 +5,6 @@ import { PrivateRoute } from './components/PrivateRoute'
 
 import Home from './pages/Home'
 import { Login } from './pages/Login'
-import { Register } from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Pets from './pages/Pets'
 import PetForm from './pages/PetForm'
@@ -33,7 +32,7 @@ export default function App() {
               {/* Public */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/register" element={<Navigate to="/login" replace />} />
 
               {/* Protected */}
               <Route element={<PrivateRoute />}>

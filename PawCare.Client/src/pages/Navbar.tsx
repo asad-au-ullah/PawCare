@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { Zap } from "lucide-react";
 
 const navLinks = [
     { to: "/dashboard", label: "Dashboard" },
@@ -15,10 +17,15 @@ const navLinks = [
 ];
 
 export function Navbar() {
-    const { user, logout } = useAuth();
+    const { user, logout, loginAsDemo } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const queryClient = useQueryClient();
+
+    const demoMutation = useMutation({
+        mutationFn: loginAsDemo,
+        onSuccess: () => navigate("/dashboard"),
+    });
 
     const handleLogout = () => {
         logout();
@@ -89,12 +96,14 @@ export function Navbar() {
                             >
                                 Login
                             </Link>
-                            <Link
-                                to="/register"
-                                className={buttonVariants({ variant: "default" })}
+                            <Button
+                                onClick={() => demoMutation.mutate()}
+                                disabled={demoMutation.isPending}
+                                className="gap-1.5"
                             >
-                                Register
-                            </Link>
+                                <Zap className="w-3.5 h-3.5" />
+                                {demoMutation.isPending ? "Loading…" : "Try Demo"}
+                            </Button>
                         </>
                     )}
                 </div>

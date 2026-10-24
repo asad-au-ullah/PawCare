@@ -137,10 +137,8 @@ export function Login() {
 
                     <CardFooter className="justify-center">
                         <p className="text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="text-teal-600 font-medium hover:underline">
-                                Create one
-                            </Link>
+                            Just exploring?{' '}
+                            <span className="text-teal-600 font-medium">Use the demo account above.</span>
                         </p>
                     </CardFooter>
                 </Card>
