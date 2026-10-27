@@ -126,8 +126,8 @@ model Appointment {
   durationMinutes  Int               @default(30)
   petId            Int
   pet              Pet               @relation(fields: [petId], references: [id], onDelete: Cascade)
-  veterinarianId   Int
-  veterinarian     Veterinarian      @relation(fields: [veterinarianId], references: [id], onDelete: Restrict)
+  veterinarianId   Int?
+  veterinarian     Veterinarian?     @relation(fields: [veterinarianId], references: [id], onDelete: SetNull)
 
   @@index([petId])
   @@index([veterinarianId])

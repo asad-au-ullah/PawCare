@@ -117,7 +117,9 @@ function AppointmentCard({ appt }: { appt: AppointmentResponse }) {
                         <div className="space-y-1">
                             <p className="font-semibold text-slate-900 text-base">{appt.petName}</p>
                             <p className="text-sm text-muted-foreground">
-                                Dr. {appt.veterinarianFirstName} {appt.veterinarianLastName}
+                                {appt.veterinarianFirstName
+                                    ? `Dr. ${appt.veterinarianFirstName} ${appt.veterinarianLastName}`
+                                    : 'PawCare Clinical Care'}
                             </p>
                             <div className="flex items-center gap-3 text-xs text-muted-foreground pt-0.5 flex-wrap">
                                 <span className="flex items-center gap-1">
@@ -191,7 +193,7 @@ export function Appointments() {
                         All your scheduled and past visits in one place.
                     </p>
                 </div>
-                <Button onClick={() => navigate('/veterinarians')} className="shrink-0">
+                <Button onClick={() => navigate('/book')} className="shrink-0">
                     <PlusCircle className="w-4 h-4 mr-2" />
                     Book Appointment
                 </Button>
@@ -220,7 +222,7 @@ export function Appointments() {
 
             {/* ── Empty ─────────────────────────────────────────────────────────── */}
             {!isLoading && !isError && appointments?.length === 0 && (
-                <EmptyState onBook={() => navigate('/veterinarians')} />
+                <EmptyState onBook={() => navigate('/book')} />
             )}
 
             {/* ── Upcoming ──────────────────────────────────────────────────────── */}

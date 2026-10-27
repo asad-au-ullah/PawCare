@@ -545,7 +545,7 @@ function StepSummary({
     isBusy,
 }: {
     wizard: WizardState
-    vet: VeterinarianResponse
+    vet: VeterinarianResponse | null
     pets: PetResponse[]
     onBook: () => void
     onBack: () => void
@@ -558,9 +558,9 @@ function StepSummary({
     const rows = [
         {
             emoji: '👤',
-            label: 'Veterinarian',
-            value: `Dr. ${vet.firstName} ${vet.lastName}`,
-            sub: SPECIALTY_LABELS[vet.specialty],
+            label: 'Care Provider',
+            value: vet ? `Dr. ${vet.firstName} ${vet.lastName}` : 'PawCare Clinical Team',
+            sub: vet ? SPECIALTY_LABELS[vet.specialty] : 'General Practice & Outpatient Care',
         },
         {
             emoji: petSp?.emoji ?? '🐾',
@@ -605,9 +605,11 @@ function StepSummary({
                         Appointment Summary
                     </p>
                     <p className="text-white font-bold text-lg mt-1">
-                        Dr. {vet.firstName} {vet.lastName}
+                        {vet ? `Dr. ${vet.firstName} ${vet.lastName}` : 'PawCare Clinical Care'}
                     </p>
-                    <p className="text-blue-200 text-sm">{SPECIALTY_LABELS[vet.specialty]}</p>
+                    <p className="text-blue-200 text-sm">
+                        {vet ? SPECIALTY_LABELS[vet.specialty] : 'PawCare Veterinary Center'}
+                    </p>
                 </div>
 
                 {/* Rows */}
@@ -656,7 +658,7 @@ function StepSummary({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function BookAppointment() {
-    const { vetId }     = useParams<{ vetId: string }>()
+    const { vetId }     = useParams<{ vetId?: string }>()
     const navigate      = useNavigate()
     const location      = useLocation()
     const queryClient   = useQueryClient()
@@ -704,8 +706,8 @@ export function BookAppointment() {
             navigate('/appointments')
         },
         onError: (err: unknown) => {
-            const axiosErr = err as { response?: { data?: { error?: string } } }
-            const msg = axiosErr?.response?.data?.error ?? 'Failed to book appointment. Please try again.'
+            const axiosErr = err as { response?: { data?: { message?: string; error?: string } } }
+            const msg = axiosErr?.response?.data?.message ?? axiosErr?.response?.data?.error ?? 'Failed to book appointment. Please try again.'
             toast.error(msg)
         },
     })
@@ -715,7 +717,7 @@ export function BookAppointment() {
         const scheduledAt = new Date(`${wizard.date}T${wizard.time}`).toISOString()
         bookMutation.mutate({
             petId:           wizard.petId,
-            veterinarianId:  vetIdNum!,
+            veterinarianId:  vetIdNum ?? null,
             scheduledAt,
             reason:          wizard.reason,
             durationMinutes: wizard.durationMinutes,
@@ -729,13 +731,16 @@ export function BookAppointment() {
             {/* Header */}
             <div>
                 <button
-                    onClick={() => navigate('/veterinarians')}
-                    className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-slate-900 transition-colors mb-4"
+                    onClick={() => navigate(vetIdNum ? '/veterinarians' : '/appointments')}
+                    className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-slate-900 transition-colors mb-4 cursor-pointer"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to Veterinarians
+                    {vetIdNum ? 'Back to Veterinarians' : 'Back to Appointments'}
                 </button>
                 <h1 className="text-2xl font-bold text-slate-900">Book an Appointment</h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                    {vet ? `Scheduling with Dr. ${vet.firstName} ${vet.lastName}` : 'Schedule a care visit for your pet'}
+                </p>
             </div>
 
             {/* Vet bar */}
@@ -808,10 +813,10 @@ export function BookAppointment() {
                         />
                     )}
 
-                    {wizard.step === 4 && vet && (
+                    {wizard.step === 4 && (
                         <StepSummary
                             wizard={wizard}
-                            vet={vet}
+                            vet={vet ?? null}
                             pets={pets}
                             onBook={handleBook}
                             onBack={() => update({ step: 3 })}

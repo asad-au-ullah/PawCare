@@ -58,18 +58,19 @@ export interface AppointmentResponse {
     durationMinutes: number
     petId: number
     petName: string
-    veterinarianId: number
-    veterinarianFirstName: string
-    veterinarianLastName: string
+    veterinarianId: number | null
+    veterinarianFirstName: string | null
+    veterinarianLastName: string | null
 }
 
 // Mirrors CreateAppointmentRequest record from the backend
 export interface CreateAppointmentPayload {
     petId: number
-    veterinarianId: number
+    veterinarianId?: number | null
     scheduledAt: string             // ISO 8601 UTC string
     reason: AppointmentReasonValue
     durationMinutes: number
+    notes?: string
 }
 
 // ─── API calls ────────────────────────────────────────────────────────────────

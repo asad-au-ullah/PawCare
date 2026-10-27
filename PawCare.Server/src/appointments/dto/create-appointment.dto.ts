@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEnum, IsInt, Max, Min } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export enum AppointmentReason {
   Checkup = 1,
@@ -13,8 +13,9 @@ export enum AppointmentReason {
 
 export class CreateAppointmentDto {
   @ApiProperty() @IsInt() @Min(1) petId!: number;
-  @ApiProperty() @IsInt() @Min(1) veterinarianId!: number;
+  @ApiPropertyOptional() @IsOptional() @IsInt() @Min(1) veterinarianId?: number;
   @ApiProperty() @IsDateString() scheduledAt!: string;
   @ApiProperty({ enum: AppointmentReason }) @IsEnum(AppointmentReason) reason!: AppointmentReason;
   @ApiProperty({ minimum: 15, maximum: 240 }) @IsInt() @Min(15) @Max(240) durationMinutes!: number;
+  @ApiPropertyOptional() @IsOptional() @IsString() notes?: string;
 }

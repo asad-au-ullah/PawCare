@@ -43,6 +43,7 @@ export default function App() {
                 <Route path="/pets/:id/edit" element={<PetForm />} />
                 //#endregion
                 <Route path="/veterinarians" element={<Veterinarians />} />
+                <Route path="/book" element={<BookAppointment />} />
                 <Route path="/book/:vetId" element={<BookAppointment />} />
                 <Route path="/appointments" element={<Appointments />} />
               </Route>

@@ -30,15 +30,15 @@ const steps = [
     },
     {
         n: '03',
-        title: 'Choose a Veterinarian',
+        title: 'Select Care & Service',
         description:
-            'Browse available veterinarians and select the one that fits your needs.',
+            'Choose the checkup, vaccination, or consultation your pet needs.',
     },
     {
         n: '04',
         title: 'Book an Appointment',
         description:
-            'Pick a convenient date and time, then manage your appointments anytime.',
+            'Pick a convenient date and time directly, with optional doctor preferences.',
     },
 ];
 
@@ -151,11 +151,11 @@ export default function Home() {
                         <Zap className="w-4 h-4" />
                         {demoMutation.isPending ? 'Loading…' : 'Try Demo — No Sign-up'}
                     </Button>
-                    <Button size="lg" onClick={() => isAuthenticated ? navigate('/veterinarians') : demoMutation.mutate()} className="px-8">
+                    <Button size="lg" onClick={() => isAuthenticated ? navigate('/book') : demoMutation.mutate()} className="px-8">
                         Book an Appointment
                     </Button>
                     <Button size="lg" variant="outline" onClick={() => navigate('/veterinarians')} className="px-8">
-                        Browse Veterinarians
+                        Our Veterinarians
                     </Button>
                 </div>
 

@@ -26,9 +26,15 @@ The HTTP surface is intentionally kept compatible with the React client:
 - `DELETE /api/pets/:id`
 - `GET /api/veterinarians`
 - `GET /api/veterinarians/:id`
-- `POST /api/appointments`
+- `POST /api/appointments` (direct care scheduling with optional `veterinarianId` preference)
 - `GET /api/appointments/me`
 - `GET /health`
+
+### Scheduling Architecture
+Appointments are decoupled from mandatory marketplace doctor selection:
+- Pet owners can book appointments directly for their pets (`veterinarianId` is optional).
+- Pet overlap conflicts are strictly enforced to prevent double-booking pets.
+- If a specific veterinarian is requested, provider availability is validated.
 
 Swagger UI is available at `/docs`.
 

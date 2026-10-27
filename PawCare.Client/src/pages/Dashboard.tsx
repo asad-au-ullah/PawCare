@@ -3,7 +3,6 @@ import { useAuth } from '@/context/AuthContext'
 import { useQuery } from '@tanstack/react-query'
 import { petsApi } from '../../services/pets'
 import { appointmentsApi, AppointmentStatus, type AppointmentResponse } from '../../services/appointments'
-import { veterinariansApi } from '../../services/veterinarians'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -53,7 +52,9 @@ function formatAppointment(appt: AppointmentResponse): Appointment {
     return {
         id: appt.id,
         petName: appt.petName,
-        vetName: `Dr. ${appt.veterinarianFirstName} ${appt.veterinarianLastName}`,
+        vetName: appt.veterinarianFirstName
+            ? `Dr. ${appt.veterinarianFirstName} ${appt.veterinarianLastName}`
+            : 'PawCare Clinical Care',
         dateLabel,
         time,
         status: isUpcoming ? 'upcoming' : 'completed',
@@ -158,11 +159,6 @@ export default function Dashboard() {
         enabled: !!user?.id,
     })
 
-    const { data: vetsData } = useQuery({
-        queryKey: ['veterinarians'],
-        queryFn: async () => await veterinariansApi.getAll()
-    })
-
     const { data: apptsData } = useQuery({
         queryKey: ['appointments', user?.id],
         queryFn: async () => {
@@ -175,7 +171,7 @@ export default function Dashboard() {
     const stats = {
         pets: petsData?.length || 0,
         upcoming: apptsData?.filter(a => a.status === AppointmentStatus.Scheduled || a.status === AppointmentStatus.Confirmed).length || 0,
-        veterinarians: vetsData?.length || 0,
+        completed: apptsData?.filter(a => a.status === AppointmentStatus.Completed).length || 0,
     }
 
     const appointments = (apptsData || [])
@@ -188,9 +184,9 @@ export default function Dashboard() {
 
     const quickActions = [
         { icon: <PlusCircle className="w-4 h-4" />, label: 'Add Pet', to: '/pets/new' },
-        { icon: <Calendar className="w-4 h-4" />, label: 'Book Appointment', to: '/veterinarians' },
+        { icon: <Calendar className="w-4 h-4" />, label: 'Book Appointment', to: '/book' },
         { icon: <PawPrint className="w-4 h-4" />, label: 'View Pets', to: '/pets' },
-        { icon: <Stethoscope className="w-4 h-4" />, label: 'Browse Veterinarians', to: '/veterinarians' },
+        { icon: <Stethoscope className="w-4 h-4" />, label: 'Our Veterinarians', to: '/veterinarians' },
     ]
 
     return (
@@ -211,7 +207,7 @@ export default function Dashboard() {
                         <PlusCircle className="w-4 h-4 mr-1.5" />
                         Add Pet
                     </Button>
-                    <Button size="sm" onClick={() => navigate('/veterinarians')}>
+                    <Button size="sm" onClick={() => navigate('/book')}>
                         <Calendar className="w-4 h-4 mr-1.5" />
                         Book Appointment
                     </Button>
@@ -227,8 +223,8 @@ export default function Dashboard() {
                 </h2>
                 <div className="flex flex-col sm:flex-row gap-4">
                     <StatCard emoji="🐾" label="My Pets" value={stats.pets} />
-                    <StatCard emoji="📅" label="Upcoming Appointments" value={stats.upcoming} />
-                    <StatCard emoji="👨‍⚕️" label="Veterinarians" value={stats.veterinarians} />
+                    <StatCard emoji="📅" label="Upcoming Visits" value={stats.upcoming} />
+                    <StatCard emoji="✅" label="Completed Visits" value={stats.completed} />
                 </div>
             </div>
 
@@ -278,7 +274,7 @@ export default function Dashboard() {
                                 variant="link"
                                 size="sm"
                                 className="mt-1 text-amber-600"
-                                onClick={() => navigate('/veterinarians')}
+                                onClick={() => navigate('/book')}
                             >
                                 Book one now
                             </Button>
